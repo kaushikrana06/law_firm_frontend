@@ -1,0 +1,9 @@
+{
+    "files.exclude": {
+      "**/node_modules": true,
+      "vite.config.js": true,
+      "**/.vscode": true
+
+    },
+  }
+  
