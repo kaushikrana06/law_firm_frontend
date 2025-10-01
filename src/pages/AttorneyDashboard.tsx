@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import type { AppDispatch } from "@/store";
 import { Scale, LogOut, Plus, Search, Filter, FileText, Clock, CheckCircle2 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Card } from "../components/ui/card";
 import { Input } from "../components/ui/input";
 import { ThemeToggle } from "../components/ThemeToggle";
 import { Badge } from "../components/ui/badge";
+import { logout } from "../store/authSlice";
 import {
   Select,
   SelectContent,
@@ -23,12 +25,14 @@ import {
 } from "../components/ui/dialog";
 import { Label } from "../components/ui/label";
 import { toast } from "sonner";
+import { useDispatch } from "react-redux";
 
 const AttorneyDashboard = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch<AppDispatch>();
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
-
+ const [loggingOut, setLoggingOut] = useState(false);
   // Mock cases data
   const [cases] = useState([
     {
@@ -64,10 +68,19 @@ const AttorneyDashboard = () => {
       nextAction: "File submission",
     },
   ]);
-
-  const handleLogout = () => {
-    toast.success("Logged out successfully");
-    navigate("/attorney/login");
+const handleLogout = async () => {
+    if (loggingOut) return;
+    setLoggingOut(true);
+    try {
+      await dispatch(logout()).unwrap(); // calls /auth/logout/ and clears tokens
+      toast.success("Logged out successfully");
+    } catch {
+      // We still clear client state in the thunk's finally; just inform the user.
+      toast.error("Couldn't reach server. Your local session was cleared.");
+    } finally {
+      setLoggingOut(false);
+      navigate("/attorney/login", { replace: true });
+    }
   };
 
   const getStatusColor = (status: string): "default" | "secondary" | "outline" => {

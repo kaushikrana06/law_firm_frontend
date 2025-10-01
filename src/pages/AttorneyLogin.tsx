@@ -1,3 +1,4 @@
+// src/pages/AttorneyLogin.tsx
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Scale, ArrowLeft, Mail, Lock } from "lucide-react";
@@ -7,33 +8,51 @@ import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
 import { ThemeToggle } from "../components/ThemeToggle";
 import { toast } from "sonner";
+import { useDispatch } from "react-redux";
+import { attorneyLogin } from "../store/authSlice"; // thunk that handles tokens & user
+import { extractApiError } from "../lib/extractApiError";
 
 const AttorneyLogin = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch(); // or useDispatch<AppDispatch>()
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [formError, setFormError] = useState<string>("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+    setFormError("");
+
     if (!email || !password) {
-      toast.error("Please fill in all fields");
+      const msg = "Please fill in all fields";
+      setFormError(msg);
+      toast.error(msg);
       return;
     }
 
     setIsLoading(true);
-    
-    // Simulate API call
-    setTimeout(() => {
-      setIsLoading(false);
-      if (email && password) {
-        toast.success("Login successful!");
+    try {
+      const action = await (dispatch as any)(attorneyLogin({ email, password }));
+
+      if (attorneyLogin.fulfilled.match(action)) {
+        toast.success("Login successful");
         navigate("/attorney/dashboard");
       } else {
-        toast.error("Invalid credentials");
+        const msg =
+          action.payload ||
+          action.error?.message ||
+          "Login failed";
+        setFormError(String(msg));
+        toast.error(String(msg));
       }
-    }, 1000);
+    } catch (err: any) {
+      const msg = extractApiError(err) ? extractApiError(err) : "Login failed";
+      setFormError(msg);
+      toast.error(msg);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -41,11 +60,7 @@ const AttorneyLogin = () => {
       {/* Header */}
       <header className="border-b border-border bg-card/50 backdrop-blur-sm">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <Button
-            variant="ghost"
-            onClick={() => navigate("/")}
-            className="gap-2"
-          >
+          <Button variant="ghost" onClick={() => navigate("/")} className="gap-2">
             <ArrowLeft className="w-4 h-4" />
             Back
           </Button>
@@ -59,7 +74,7 @@ const AttorneyLogin = () => {
         </div>
       </header>
 
-      {/* Main Content */}
+      {/* Main */}
       <main className="container mx-auto px-4 py-16 md:py-24">
         <div className="max-w-md mx-auto">
           <Card className="p-8 shadow-elegant">
@@ -68,16 +83,12 @@ const AttorneyLogin = () => {
                 <Scale className="w-8 h-8 text-primary-foreground" />
               </div>
               <h2 className="text-3xl font-serif font-bold mb-2">Attorney Login</h2>
-              <p className="text-muted-foreground">
-                Access your dashboard to manage cases
-              </p>
+              <p className="text-muted-foreground">Access your dashboard to manage cases</p>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="space-y-2">
-                <Label htmlFor="email" className="text-base font-medium">
-                  Email
-                </Label>
+                <Label htmlFor="email" className="text-base font-medium">Email</Label>
                 <div className="relative">
                   <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                   <Input
@@ -88,14 +99,13 @@ const AttorneyLogin = () => {
                     onChange={(e) => setEmail(e.target.value)}
                     className="h-12 pl-11"
                     disabled={isLoading}
+                    autoComplete="username"
                   />
                 </div>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="password" className="text-base font-medium">
-                  Password
-                </Label>
+                <Label htmlFor="password" className="text-base font-medium">Password</Label>
                 <div className="relative">
                   <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                   <Input
@@ -106,9 +116,12 @@ const AttorneyLogin = () => {
                     onChange={(e) => setPassword(e.target.value)}
                     className="h-12 pl-11"
                     disabled={isLoading}
+                    autoComplete="current-password"
                   />
                 </div>
               </div>
+
+              {formError ? <p className="text-sm text-red-500">{formError}</p> : null}
 
               <Button
                 type="submit"

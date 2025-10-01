@@ -9,6 +9,7 @@ import ClientStatusView from "./pages/ClientStatusView";
 import AttorneyLogin from "./pages/AttorneyLogin";
 import AttorneyDashboard from "./pages/AttorneyDashboard";
 import NotFound from "./pages/NotFound";
+import ProtectedRoute from "./components/protectedRoute";
 
 const queryClient = new QueryClient();
 
@@ -23,7 +24,9 @@ const App = () => (
           <Route path="/client" element={<ClientCodeEntry />} />
           <Route path="/client/status/:code" element={<ClientStatusView />} />
           <Route path="/attorney/login" element={<AttorneyLogin />} />
-          <Route path="/attorney/dashboard" element={<AttorneyDashboard />} />
+          <Route path="/attorney/dashboard" element={<ProtectedRoute>
+            <AttorneyDashboard />
+          </ProtectedRoute>} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
