@@ -1,11 +1,10 @@
-import { Link } from 'react-router-dom'
-
-export default function Home() {
+export default function Home(){
   return (
-    <div>
-      <h1>Home Page</h1>
-      <p>Welcome to the homepage with Redux example</p>
-      <Link to="/about">Go to About</Link>
-    </div>
-  )
+    <main className="min-h-screen grid place-items-center bg-gradient-to-br from-white to-neutral-100">
+      <div className="card text-center space-y-3">
+        <h1 className="text-3xl font-bold">Tailwind wired up ✅</h1>
+        <button className="btn-primary">Primary Button</button>
+      </div>
+    </main>
+  );
 }
