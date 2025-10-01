@@ -1,4 +1,3 @@
-// src/pages/AttorneyLogin.tsx
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Scale, ArrowLeft, Mail, Lock } from "lucide-react";
@@ -9,13 +8,13 @@ import { Label } from "../components/ui/label";
 import { ThemeToggle } from "../components/ThemeToggle";
 import { toast } from "sonner";
 import { useDispatch } from "react-redux";
-import { attorneyLogin } from "../store/authSlice"; // thunk that handles tokens & user
+import { attorneyLogin } from "../store/authSlice";
 import { extractApiError } from "../lib/extractApiError";
 
 const AttorneyLogin = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch(); // or useDispatch<AppDispatch>()
-  const [email, setEmail] = useState("");
+  const dispatch = useDispatch() as any;
+  const [email, setEmail]       = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [formError, setFormError] = useState<string>("");
@@ -33,21 +32,17 @@ const AttorneyLogin = () => {
 
     setIsLoading(true);
     try {
-      const action = await (dispatch as any)(attorneyLogin({ email, password }));
-
+      const action = await dispatch(attorneyLogin({ email, password }));
       if (attorneyLogin.fulfilled.match(action)) {
         toast.success("Login successful");
         navigate("/attorney/dashboard");
       } else {
-        const msg =
-          action.payload ||
-          action.error?.message ||
-          "Login failed";
+        const msg = action.payload || action.error?.message || "Login failed";
         setFormError(String(msg));
         toast.error(String(msg));
       }
     } catch (err: any) {
-      const msg = extractApiError(err) ? extractApiError(err) : "Login failed";
+      const msg = extractApiError(err) || "Login failed";
       setFormError(msg);
       toast.error(msg);
     } finally {
@@ -134,7 +129,7 @@ const AttorneyLogin = () => {
               </Button>
             </form>
 
-            <div className="mt-6 pt-6 border-t border-border text-center">
+            <div className="mt-6 pt-6 border-t border-border text-center space-y-2">
               <p className="text-sm text-muted-foreground">
                 Forgot your password?{" "}
                 <button
@@ -142,6 +137,15 @@ const AttorneyLogin = () => {
                   className="text-primary hover:underline font-medium"
                 >
                   Contact admin
+                </button>
+              </p>
+              <p className="text-sm text-muted-foreground">
+                New here?{" "}
+                <button
+                  onClick={() => navigate("/attorney/signup")}
+                  className="text-primary hover:underline font-medium"
+                >
+                  Create an account
                 </button>
               </p>
             </div>
