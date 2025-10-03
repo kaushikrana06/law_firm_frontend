@@ -81,7 +81,6 @@ const AttorneyDashboard = () => {
   ])
   const accessToken = useSelector((state) => state.auth.accessToken);
   const refresh = useSelector((state) => state.auth.refreshToken);
-  console.log("refresh", refresh)
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
   console.log("isAuthenticated", isAuthenticated)
   const handleLogout = async () => {
@@ -90,7 +89,6 @@ const AttorneyDashboard = () => {
 
     try {
       const res = await logoutApi(refresh)
-
       dispatch(clearAuth());
       toast.success("Logged out successfully");
       navigate("/attorney/login", { replace: true });
