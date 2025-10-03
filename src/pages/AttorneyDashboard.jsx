@@ -33,8 +33,6 @@ import {
 import { Label } from "../components/ui/label"
 import { toast } from "sonner"
 import { useDispatch, useSelector } from "react-redux"
-import { logoutApi } from "@/auth/api/authApi"
-import Cookies from 'js-cookie';
 import { clearAuth } from "@/features/auth/authSlice"
 
 const AttorneyDashboard = () => {
@@ -80,8 +78,7 @@ const AttorneyDashboard = () => {
   ])
   const accessToken = useSelector((state) => state.auth.accessToken);
   const refreshToken = useSelector((state) => state.auth.refreshToken);
-  console.log("refreshToken", refreshToken);
-  console.log("accessToken", accessToken);
+
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
   console.log("isAuthenticated", isAuthenticated)
   const handleLogout = async () => {
