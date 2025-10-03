@@ -7,8 +7,7 @@ import { Input } from "../components/ui/input"
 import { Label } from "../components/ui/label"
 import { ThemeToggle } from "../components/ThemeToggle"
 import { toast } from "sonner"
-import { api } from "../lib/api"
-import { extractApiError } from "../lib/extractApiError"
+import { signup } from "@/auth/api/authApi"   // ✅ import signup API
 
 const MIN_PASSWORD = 12 // mirrors backend minimumLength validator
 
@@ -55,20 +54,23 @@ const AttorneySignup = () => {
 
     setIsLoading(true)
     try {
-      await api.post("/auth/register/", {
+      await signup({
         username,
         email,
         password,
         password_confirm,
         first_name,
-        last_name
+        last_name,
       })
 
-      toast.success("Account created. Please check your email to verify.")
-      // Send them back to login so they can sign in after verifying
+      toast.success("Account created! Please check your email to verify.")
       navigate("/attorney/login", { replace: true })
     } catch (err) {
-      const msg = extractApiError(err)
+      console.error("Signup failed:", err)
+      const msg =
+        err?.response?.data?.detail ||
+        err?.response?.data?.message ||
+        "Signup failed. Please try again."
       setFormError(msg)
       toast.error(msg)
     } finally {
@@ -120,27 +122,23 @@ const AttorneySignup = () => {
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="first_name" className="text-base font-medium">
-                    First name
-                  </Label>
+                  <Label htmlFor="first_name">First name</Label>
                   <Input
                     id="first_name"
-                    placeholder="Alex"
                     value={first_name}
                     onChange={e => setFirstName(e.target.value)}
+                    placeholder="Alex"
                     autoComplete="given-name"
                     disabled={isLoading}
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="last_name" className="text-base font-medium">
-                    Last name
-                  </Label>
+                  <Label htmlFor="last_name">Last name</Label>
                   <Input
                     id="last_name"
-                    placeholder="Stone"
                     value={last_name}
                     onChange={e => setLastName(e.target.value)}
+                    placeholder="Stone"
                     autoComplete="family-name"
                     disabled={isLoading}
                   />
@@ -148,31 +146,27 @@ const AttorneySignup = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="username" className="text-base font-medium">
-                  Username
-                </Label>
+                <Label htmlFor="username">Username</Label>
                 <Input
                   id="username"
-                  placeholder="alex"
                   value={username}
                   onChange={e => setUsername(e.target.value)}
+                  placeholder="alex"
                   autoComplete="username"
                   disabled={isLoading}
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="email" className="text-base font-medium">
-                  Email
-                </Label>
+                <Label htmlFor="email">Email</Label>
                 <div className="relative">
                   <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                   <Input
                     id="email"
                     type="email"
-                    placeholder="lawyer@firm.com"
                     value={email}
                     onChange={e => setEmail(e.target.value)}
+                    placeholder="lawyer@firm.com"
                     className="pl-11"
                     autoComplete="email"
                     disabled={isLoading}
@@ -181,17 +175,15 @@ const AttorneySignup = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="password" className="text-base font-medium">
-                  Password
-                </Label>
+                <Label htmlFor="password">Password</Label>
                 <div className="relative">
                   <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                   <Input
                     id="password"
                     type="password"
-                    placeholder={`Min ${MIN_PASSWORD} characters`}
                     value={password}
                     onChange={e => setPassword(e.target.value)}
+                    placeholder={`Min ${MIN_PASSWORD} characters`}
                     className="pl-11"
                     autoComplete="new-password"
                     disabled={isLoading}
@@ -200,20 +192,15 @@ const AttorneySignup = () => {
               </div>
 
               <div className="space-y-2">
-                <Label
-                  htmlFor="password_confirm"
-                  className="text-base font-medium"
-                >
-                  Confirm password
-                </Label>
+                <Label htmlFor="password_confirm">Confirm password</Label>
                 <div className="relative">
                   <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                   <Input
                     id="password_confirm"
                     type="password"
-                    placeholder="Re-enter password"
                     value={password_confirm}
                     onChange={e => setPasswordConfirm(e.target.value)}
+                    placeholder="Re-enter password"
                     className="pl-11"
                     autoComplete="new-password"
                     disabled={isLoading}
@@ -221,9 +208,9 @@ const AttorneySignup = () => {
                 </div>
               </div>
 
-              {formError ? (
+              {formError && (
                 <p className="text-sm text-red-500">{formError}</p>
-              ) : null}
+              )}
 
               <Button
                 type="submit"

@@ -7,10 +7,9 @@ import { Input } from "../components/ui/input"
 import { Label } from "../components/ui/label"
 import { ThemeToggle } from "../components/ThemeToggle"
 import { toast } from "sonner"
-import { useDispatch } from "react-redux"
-import { attorneyLogin } from "../store/authSlice"
-import { extractApiError } from "../lib/extractApiError"
-
+import { useDispatch, useSelector } from "react-redux"
+import { login } from "@/auth/api/authApi"
+import { setCredentials } from "@/features/auth/authSlice"
 const AttorneyLogin = () => {
   const navigate = useNavigate()
   const dispatch = useDispatch()
@@ -18,8 +17,9 @@ const AttorneyLogin = () => {
   const [password, setPassword] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const [formError, setFormError] = useState("")
-
-  const handleSubmit = async e => {
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+  console.log("isAuthenticated", isAuthenticated)
+  const handleSubmit = async (e) => {
     e.preventDefault()
     setFormError("")
 
@@ -32,17 +32,13 @@ const AttorneyLogin = () => {
 
     setIsLoading(true)
     try {
-      const action = await dispatch(attorneyLogin({ email, password }))
-      if (attorneyLogin.fulfilled.match(action)) {
-        toast.success("Login successful")
-        navigate("/attorney/dashboard")
-      } else {
-        const msg = action.payload || action.error?.message || "Login failed"
-        setFormError(String(msg))
-        toast.error(String(msg))
-      }
+      const res = await login({ email, password })
+      dispatch(setCredentials({ access: res.access, refresh: res.refresh, user: res.user || null }));
+      navigate("/attorney/dashboard")
+      toast.success("Login successful!")
     } catch (err) {
-      const msg = extractApiError(err) || "Login failed"
+      console.error("Login failed:", err)
+      const msg = "Invalid email or password"
       setFormError(msg)
       toast.error(msg)
     } finally {
@@ -92,6 +88,7 @@ const AttorneyLogin = () => {
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-6">
+              {/* Email */}
               <div className="space-y-2">
                 <Label htmlFor="email" className="text-base font-medium">
                   Email
@@ -103,7 +100,7 @@ const AttorneyLogin = () => {
                     type="email"
                     placeholder="Enter email..."
                     value={email}
-                    onChange={e => setEmail(e.target.value)}
+                    onChange={(e) => setEmail(e.target.value)}
                     className="h-12 pl-11"
                     disabled={isLoading}
                     autoComplete="username"
@@ -111,6 +108,7 @@ const AttorneyLogin = () => {
                 </div>
               </div>
 
+              {/* Password */}
               <div className="space-y-2">
                 <Label htmlFor="password" className="text-base font-medium">
                   Password
@@ -122,7 +120,7 @@ const AttorneyLogin = () => {
                     type="password"
                     placeholder="Enter password..."
                     value={password}
-                    onChange={e => setPassword(e.target.value)}
+                    onChange={(e) => setPassword(e.target.value)}
                     className="h-12 pl-11"
                     disabled={isLoading}
                     autoComplete="current-password"
@@ -130,9 +128,9 @@ const AttorneyLogin = () => {
                 </div>
               </div>
 
-              {formError ? (
+              {formError && (
                 <p className="text-sm text-red-500">{formError}</p>
-              ) : null}
+              )}
 
               <Button
                 type="submit"
