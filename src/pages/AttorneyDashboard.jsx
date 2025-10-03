@@ -15,7 +15,6 @@ import { Card } from "../components/ui/card"
 import { Input } from "../components/ui/input"
 import { ThemeToggle } from "../components/ThemeToggle"
 import { Badge } from "../components/ui/badge"
-import { logout } from "../store/authSlice"
 import {
   Select,
   SelectContent,
@@ -33,7 +32,10 @@ import {
 } from "../components/ui/dialog"
 import { Label } from "../components/ui/label"
 import { toast } from "sonner"
-import { useDispatch } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
+import { clearAuth } from "@/features/auth/authSlice"
+import Logo from "@/components/Logo"
+import Footer from "@/components/Footer"
 
 const AttorneyDashboard = () => {
   const navigate = useNavigate()
@@ -76,20 +78,29 @@ const AttorneyDashboard = () => {
       nextAction: "File submission"
     }
   ])
+  const accessToken = useSelector((state) => state.auth.accessToken);
+  const refreshToken = useSelector((state) => state.auth.refreshToken);
+
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+  console.log("isAuthenticated", isAuthenticated)
   const handleLogout = async () => {
-    if (loggingOut) return
-    setLoggingOut(true)
+    if (loggingOut) return;
+    setLoggingOut(true);
+
     try {
-      await dispatch(logout()).unwrap() // calls /auth/logout/ and clears tokens
-      toast.success("Logged out successfully")
+      dispatch(clearAuth());
+      toast.success("Logged out successfully");
+      navigate("/attorney/login", { replace: true });
     } catch {
-      // We still clear client state in the thunk's finally; just inform the user.
-      toast.error("Couldn't reach server. Your local session was cleared.")
+      toast.error("Couldn't reach server. Your local session was cleared.");
+      dispatch(clearAuth());
+      navigate("/attorney/login", { replace: true });
     } finally {
-      setLoggingOut(false)
-      navigate("/attorney/login", { replace: true })
+      setLoggingOut(false);
     }
-  }
+  };
+
+
 
   const getStatusColor = status => {
     const colors = {
@@ -116,17 +127,7 @@ const AttorneyDashboard = () => {
       <header className="border-b border-border bg-card sticky top-0 z-50 shadow-sm">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 gradient-primary rounded-lg flex items-center justify-center">
-                <Scale className="w-6 h-6 text-primary-foreground" />
-              </div>
-              <div>
-                <h1 className="text-2xl font-bold font-serif tracking-tight">
-                  LAW
-                </h1>
-                <p className="text-xs text-muted-foreground">Attorney Portal</p>
-              </div>
-            </div>
+            <Logo />
             <div className="flex items-center gap-2">
               <ThemeToggle />
               <Button variant="ghost" onClick={handleLogout} className="gap-2">
@@ -340,6 +341,7 @@ const AttorneyDashboard = () => {
           </Card>
         )}
       </main>
+      <Footer />
     </div>
   )
 }

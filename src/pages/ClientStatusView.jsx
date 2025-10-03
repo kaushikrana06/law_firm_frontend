@@ -11,12 +11,13 @@ import { Button } from "../components/ui/button"
 import { Card } from "../components/ui/card"
 import { ThemeToggle } from "../components/ThemeToggle"
 import { Badge } from "../components/ui/badge"
+import Logo from "@/components/Logo"
+import Footer from "@/components/Footer"
 
 const ClientStatusView = () => {
   const { code } = useParams()
   const navigate = useNavigate()
 
-  // Mock case data - in production this would come from an API
   const caseData = {
     caseNumber: code,
     clientName: "John Doe",
@@ -47,14 +48,7 @@ const ClientStatusView = () => {
             <ArrowLeft className="w-4 h-4" />
             Back
           </Button>
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 gradient-primary rounded-lg flex items-center justify-center">
-              <Scale className="w-6 h-6 text-primary-foreground" />
-            </div>
-            <h1 className="text-2xl font-bold font-serif tracking-tight">
-              LAW
-            </h1>
-          </div>
+          <Logo />
           <ThemeToggle />
         </div>
       </header>
@@ -164,8 +158,8 @@ const ClientStatusView = () => {
                           phase.status === "completed"
                             ? "secondary"
                             : phase.status === "active"
-                            ? "default"
-                            : "outline"
+                              ? "default"
+                              : "outline"
                         }
                         className="w-fit"
                       >
@@ -184,6 +178,7 @@ const ClientStatusView = () => {
           </div>
         </div>
       </main>
+      <Footer />
     </div>
   )
 }
