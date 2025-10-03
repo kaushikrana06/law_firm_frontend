@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
-import { Scale, ArrowLeft, Mail, Lock, User } from "lucide-react"
+import { Scale, ArrowLeft, Mail, Lock, User, Eye, EyeOff } from "lucide-react"
 import { Button } from "../components/ui/button"
 import { Card } from "../components/ui/card"
 import { Input } from "../components/ui/input"
@@ -13,6 +13,7 @@ const MIN_PASSWORD = 8
 
 const AttorneySignup = () => {
   const navigate = useNavigate()
+
   const [first_name, setFirstName] = useState("")
   const [last_name, setLastName] = useState("")
   const [username, setUsername] = useState("")
@@ -21,6 +22,8 @@ const AttorneySignup = () => {
   const [password_confirm, setPasswordConfirm] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const [formError, setFormError] = useState("")
+  const [showPassword, setShowPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
 
   const validate = () => {
     if (
@@ -42,7 +45,7 @@ const AttorneySignup = () => {
     return null
   }
 
-  const handleSubmit = async e => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     setFormError("")
     const v = validate()
@@ -64,7 +67,10 @@ const AttorneySignup = () => {
       })
 
       toast.success("Account created! Please check your email to verify.")
-      navigate("/attorney/login", { replace: true })
+      navigate("/attorney/login", {
+        replace: true,
+        state: { message: "Please check your email and verify your account." },
+      })
     } catch (err) {
       console.error("Signup failed:", err)
       const msg =
@@ -120,14 +126,16 @@ const AttorneySignup = () => {
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-6">
+              {/* First Name & Last Name */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="first_name">First name</Label>
                   <Input
                     id="first_name"
                     value={first_name}
-                    onChange={e => setFirstName(e.target.value)}
+                    onChange={(e) => setFirstName(e.target.value)}
                     placeholder="Alex"
+                    className="h-12"
                     autoComplete="given-name"
                     disabled={isLoading}
                   />
@@ -137,26 +145,30 @@ const AttorneySignup = () => {
                   <Input
                     id="last_name"
                     value={last_name}
-                    onChange={e => setLastName(e.target.value)}
+                    onChange={(e) => setLastName(e.target.value)}
                     placeholder="Stone"
+                    className="h-12"
                     autoComplete="family-name"
                     disabled={isLoading}
                   />
                 </div>
               </div>
 
+              {/* Username */}
               <div className="space-y-2">
                 <Label htmlFor="username">Username</Label>
                 <Input
                   id="username"
                   value={username}
-                  onChange={e => setUsername(e.target.value)}
+                  onChange={(e) => setUsername(e.target.value)}
                   placeholder="alex"
                   autoComplete="username"
+                  className="h-12"
                   disabled={isLoading}
                 />
               </div>
 
+              {/* Email */}
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
                 <div className="relative">
@@ -165,53 +177,79 @@ const AttorneySignup = () => {
                     id="email"
                     type="email"
                     value={email}
-                    onChange={e => setEmail(e.target.value)}
+                    onChange={(e) => setEmail(e.target.value)}
                     placeholder="lawyer@firm.com"
-                    className="pl-11"
+                    className="pl-11 h-12"
                     autoComplete="email"
                     disabled={isLoading}
                   />
                 </div>
               </div>
 
+              {/* Password */}
               <div className="space-y-2">
                 <Label htmlFor="password">Password</Label>
                 <div className="relative">
                   <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                   <Input
                     id="password"
-                    type="password"
+                    type={showPassword ? "text" : "password"}
                     value={password}
-                    onChange={e => setPassword(e.target.value)}
+                    onChange={(e) => setPassword(e.target.value)}
                     placeholder={`Min ${MIN_PASSWORD} characters`}
-                    className="pl-11"
+                    className="pl-11 pr-10 h-12"
                     autoComplete="new-password"
                     disabled={isLoading}
                   />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground"
+                  >
+                    {showPassword ? (
+                      <Eye className="w-5 h-5" />
+                    ) : (
+                      <EyeOff className="w-5 h-5" />
+                    )}
+                  </button>
                 </div>
               </div>
 
+              {/* Confirm Password */}
               <div className="space-y-2">
                 <Label htmlFor="password_confirm">Confirm password</Label>
                 <div className="relative">
                   <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                   <Input
                     id="password_confirm"
-                    type="password"
+                    type={showConfirmPassword ? "text" : "password"}
                     value={password_confirm}
-                    onChange={e => setPasswordConfirm(e.target.value)}
+                    onChange={(e) => setPasswordConfirm(e.target.value)}
                     placeholder="Re-enter password"
-                    className="pl-11"
+                    className="pl-11 pr-10 h-12"
                     autoComplete="new-password"
                     disabled={isLoading}
                   />
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground"
+                  >
+                    {showConfirmPassword ? (
+                      <Eye className="w-5 h-5" />
+                    ) : (
+                      <EyeOff className="w-5 h-5" />
+                    )}
+                  </button>
                 </div>
               </div>
 
+              {/* Form Error */}
               {formError && (
                 <p className="text-sm text-red-500">{formError}</p>
               )}
 
+              {/* Submit Button */}
               <Button
                 type="submit"
                 variant="legal"
@@ -223,6 +261,7 @@ const AttorneySignup = () => {
               </Button>
             </form>
 
+            {/* Footer */}
             <div className="mt-6 pt-6 border-t border-border text-center">
               <p className="text-sm text-muted-foreground">
                 Already have an account?{" "}
