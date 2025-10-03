@@ -38,7 +38,7 @@ const AttorneyLogin = () => {
       toast.success("Login successful!")
     } catch (err) {
       console.error("Login failed:", err)
-      const msg = "Invalid email or password"
+      const msg = "something went wrong"
       setFormError(err?.response?.data?.error?.message || msg)
       toast.error(err?.response?.data?.error?.message || msg)
     } finally {
