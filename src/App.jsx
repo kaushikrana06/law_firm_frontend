@@ -13,6 +13,8 @@ import NotFound from "./pages/NotFound";
 import RequireAuth from "./routes/RequireAuth";
 import useBootstrapAuth from "./hooks/useBootstrapAuth";
 import { Toaster } from "./components/ui/sonner";
+import AttorneySuccessVerify from "./pages/AttorneySuccessVerify";
+import AttorneyInvalidVerify from "./pages/AttorneyInvalidVerify";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -36,6 +38,9 @@ const App = () => {
             <Route path="/client" element={<ClientCodeEntry />} />
             <Route path="/client/status/:code" element={<ClientStatusView />} />
             <Route path="/attorney/login" element={<AttorneyLogin />} />
+            <Route path="/success" element={<AttorneySuccessVerify />} />
+            <Route path="/invalid" element={<AttorneyInvalidVerify />} />
+
             <Route path="/attorney/signup" element={<AttorneySignup />} />
             <Route element={<RequireAuth />}>
               <Route path="/attorney/dashboard" element={<AttorneyDashboard />} />

@@ -68,7 +68,7 @@ const AttorneySignup = () => {
       })
 
       toast.success("Account created! Please check your email to verify.")
-      navigate("/attorney/login", {
+      navigate("/attorney/signup", {
         replace: true,
         state: { message: "Please check your email and verify your account." },
       })

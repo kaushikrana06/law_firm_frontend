@@ -172,7 +172,7 @@ const AttorneyLogin = () => {
             </form>
 
             <div className="mt-6 pt-6 border-t border-border text-center space-y-2">
-              <p className="text-sm text-muted-foreground">
+              {/* <p className="text-sm text-muted-foreground">
                 Forgot your password?{" "}
                 <button
                   onClick={() => toast.info("Please contact your administrator")}
@@ -180,7 +180,7 @@ const AttorneyLogin = () => {
                 >
                   Contact admin
                 </button>
-              </p>
+              </p> */}
               <p className="text-sm text-muted-foreground">
                 New here?{" "}
                 <button
