@@ -6,10 +6,10 @@ import { Card } from "../components/ui/card"
 import { Input } from "../components/ui/input"
 import { Label } from "../components/ui/label"
 import { ThemeToggle } from "../components/ThemeToggle"
+import { signup } from "@/auth/api/authApi"
 import { toast } from "sonner"
-import { signup } from "@/auth/api/authApi"   // ✅ import signup API
 
-const MIN_PASSWORD = 12 // mirrors backend minimumLength validator
+const MIN_PASSWORD = 8
 
 const AttorneySignup = () => {
   const navigate = useNavigate()
@@ -71,8 +71,8 @@ const AttorneySignup = () => {
         err?.response?.data?.detail ||
         err?.response?.data?.message ||
         "Signup failed. Please try again."
-      setFormError(msg)
-      toast.error(msg)
+      setFormError(err?.response?.data?.error?.message || msg)
+      toast.error(err?.response?.data?.error?.message || msg)
     } finally {
       setIsLoading(false)
     }

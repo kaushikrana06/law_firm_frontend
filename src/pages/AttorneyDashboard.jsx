@@ -89,13 +89,13 @@ const AttorneyDashboard = () => {
     setLoggingOut(true);
 
     try {
-      dispatch(clearAuth());         // clear redux state
+      dispatch(clearAuth());
       toast.success("Logged out successfully");
-      navigate("/attorney/login", { replace: true }); // 👈 redirect after success
+      navigate("/attorney/login", { replace: true }); 
     } catch {
       toast.error("Couldn't reach server. Your local session was cleared.");
-      dispatch(clearAuth()); // still clear local session
-      navigate("/attorney/login", { replace: true }); // 👈 still redirect
+      dispatch(clearAuth()); 
+      navigate("/attorney/login", { replace: true }); 
     } finally {
       setLoggingOut(false);
     }

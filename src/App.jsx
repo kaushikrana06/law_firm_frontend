@@ -1,6 +1,4 @@
-// App.jsx
-import { Toaster } from "./components/ui/toaster";
-import { Toaster as Sonner } from "./components/ui/sonner";
+
 import { TooltipProvider } from "./components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
@@ -14,6 +12,7 @@ import AttorneyDashboard from "./pages/AttorneyDashboard";
 import NotFound from "./pages/NotFound";
 import RequireAuth from "./routes/RequireAuth";
 import useBootstrapAuth from "./hooks/useBootstrapAuth";
+import { Toaster } from "./components/ui/sonner";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -25,12 +24,12 @@ const queryClient = new QueryClient({
 });
 
 const App = () => {
-useBootstrapAuth();
+  useBootstrapAuth();
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
-        <Toaster />
-        <Sonner />
+        <Toaster richColors position="bottom-right" />
+
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Landing />} />

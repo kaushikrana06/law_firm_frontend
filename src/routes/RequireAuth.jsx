@@ -7,7 +7,7 @@ export default function RequireAuth() {
     (state) => state.auth
   );
 
-  if (isBootstrapping) return <Loader />;
+  // if (isBootstrapping) return <Loader />;
 
   if (!refreshToken) return <Navigate to="/attorney/login" />;
 

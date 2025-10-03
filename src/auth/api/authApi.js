@@ -8,7 +8,6 @@ export const login = (credentials) =>
 // Signup
 export const signup = (credentials) =>
   axiosPublic.post("/auth/register/", credentials).then((r) => r.data);
-
 // Refresh
 export const refreshAccess = async () => {
   const { refreshToken } = store.getState().auth;
