@@ -34,6 +34,8 @@ import { Label } from "../components/ui/label"
 import { toast } from "sonner"
 import { useDispatch, useSelector } from "react-redux"
 import { clearAuth } from "@/features/auth/authSlice"
+import Logo from "@/components/Logo"
+import Footer from "@/components/Footer"
 
 const AttorneyDashboard = () => {
   const navigate = useNavigate()
@@ -88,11 +90,11 @@ const AttorneyDashboard = () => {
     try {
       dispatch(clearAuth());
       toast.success("Logged out successfully");
-      navigate("/attorney/login", { replace: true }); 
+      navigate("/attorney/login", { replace: true });
     } catch {
       toast.error("Couldn't reach server. Your local session was cleared.");
-      dispatch(clearAuth()); 
-      navigate("/attorney/login", { replace: true }); 
+      dispatch(clearAuth());
+      navigate("/attorney/login", { replace: true });
     } finally {
       setLoggingOut(false);
     }
@@ -125,17 +127,7 @@ const AttorneyDashboard = () => {
       <header className="border-b border-border bg-card sticky top-0 z-50 shadow-sm">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 gradient-primary rounded-lg flex items-center justify-center">
-                <Scale className="w-6 h-6 text-primary-foreground" />
-              </div>
-              <div>
-                <h1 className="text-2xl font-bold font-serif tracking-tight">
-                  LAW
-                </h1>
-                <p className="text-xs text-muted-foreground">Attorney Portal</p>
-              </div>
-            </div>
+            <Logo />
             <div className="flex items-center gap-2">
               <ThemeToggle />
               <Button variant="ghost" onClick={handleLogout} className="gap-2">
@@ -349,6 +341,7 @@ const AttorneyDashboard = () => {
           </Card>
         )}
       </main>
+      <Footer />
     </div>
   )
 }

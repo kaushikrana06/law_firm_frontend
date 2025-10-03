@@ -10,6 +10,7 @@ import { toast } from "sonner"
 import { useDispatch, useSelector } from "react-redux"
 import { login } from "@/auth/api/authApi"
 import { setCredentials } from "@/features/auth/authSlice"
+import Logo from "@/components/Logo"
 
 const AttorneyLogin = () => {
   const navigate = useNavigate()
@@ -78,12 +79,7 @@ const AttorneyLogin = () => {
             <ArrowLeft className="w-4 h-4" />
             Back
           </Button>
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 gradient-primary rounded-lg flex items-center justify-center">
-              <Scale className="w-6 h-6 text-primary-foreground" />
-            </div>
-            <h1 className="text-2xl font-bold font-serif tracking-tight">LAW</h1>
-          </div>
+          <Logo />
           <ThemeToggle />
         </div>
       </header>

@@ -3,6 +3,8 @@ import { Button } from "../components/ui/button"
 import { Card } from "../components/ui/card"
 import { ThemeToggle } from "../components/ThemeToggle"
 import { useNavigate } from "react-router-dom"
+import Logo from "@/components/Logo"
+import Footer from "@/components/Footer"
 
 const Landing = () => {
   const navigate = useNavigate()
@@ -12,14 +14,7 @@ const Landing = () => {
       {/* Header */}
       <header className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 gradient-primary rounded-lg flex items-center justify-center">
-              <Scale className="w-6 h-6 text-primary-foreground" />
-            </div>
-            <h1 className="text-2xl font-bold font-serif tracking-tight">
-              LAW
-            </h1>
-          </div>
+          <Logo />
           <ThemeToggle />
         </div>
       </header>
@@ -106,14 +101,7 @@ const Landing = () => {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-border bg-card/50 backdrop-blur-sm mt-16">
-        <div className="container mx-auto px-4 py-8">
-          <div className="text-center text-sm text-muted-foreground">
-            <p>&copy; 2025 LAW Legal. All rights reserved.</p>
-            <p className="mt-2">Secure case management for modern law firms.</p>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   )
 }
