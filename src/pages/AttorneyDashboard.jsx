@@ -36,6 +36,7 @@ import { useDispatch, useSelector } from "react-redux"
 import { clearAuth } from "@/features/auth/authSlice"
 import Logo from "@/components/Logo"
 import Footer from "@/components/Footer"
+import { logoutApi } from "@/auth/api/authApi"
 
 const AttorneyDashboard = () => {
   const navigate = useNavigate()
@@ -79,8 +80,8 @@ const AttorneyDashboard = () => {
     }
   ])
   const accessToken = useSelector((state) => state.auth.accessToken);
-  const refreshToken = useSelector((state) => state.auth.refreshToken);
-
+  const refresh = useSelector((state) => state.auth.refreshToken);
+  console.log("refresh", refresh)
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
   console.log("isAuthenticated", isAuthenticated)
   const handleLogout = async () => {
@@ -88,6 +89,8 @@ const AttorneyDashboard = () => {
     setLoggingOut(true);
 
     try {
+      const res = await logoutApi(refresh)
+
       dispatch(clearAuth());
       toast.success("Logged out successfully");
       navigate("/attorney/login", { replace: true });

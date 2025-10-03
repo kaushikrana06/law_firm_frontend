@@ -21,5 +21,5 @@ export const refreshAccess = async () => {
 };
 
 // Logout
-export const logoutApi = (refreshToken) =>
-  axiosProtected.post("/auth/logout/", { refresh: refreshToken }).then((r) => r.data);
+export const logoutApi = (refresh) =>
+  axiosProtected.post("/auth/logout/", { refresh }).then((r) => r.data);

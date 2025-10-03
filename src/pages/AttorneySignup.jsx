@@ -190,7 +190,7 @@ const AttorneySignup = () => {
                     type={showPassword ? "text" : "password"}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    placeholder={`Enter Password`}
+                    placeholder={`Enter password`}
                     className="pl-11 pr-10 h-12"
                     autoComplete="new-password"
                     disabled={isLoading}
