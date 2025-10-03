@@ -3,7 +3,7 @@ import react from "@vitejs/plugin-react-swc";
 import path from "path";
 
 export default defineConfig(() => ({
-  base: "./",
+  base: "/",
   plugins: [react()],
   resolve: {
     alias: {
@@ -18,7 +18,7 @@ export default defineConfig(() => ({
     host: "0.0.0.0",
     port: parseInt(process.env.PORT) || 3000,
     allowedHosts: [
-    "law-firm-frontend-ezn8.onrender.com",
-  ],
+      "law-firm-frontend-ezn8.onrender.com",
+    ],
   },
 }));
