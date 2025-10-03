@@ -12,16 +12,10 @@ export default defineConfig(() => ({
   },
   server: {
     host: "0.0.0.0",
-    port: 3000,
-    allowedHosts: [
-      "law-firm-frontend-ezn8.onrender.com",
-    ],
+    port: parseInt(process.env.PORT) || 3000, 
   },
   preview: {
     host: "0.0.0.0",
-    port: 3000,
-    allowedHosts: [
-      "law-firm-frontend-ezn8.onrender.com",
-    ],
+    port: parseInt(process.env.PORT) || 3000,
   },
 }));
