@@ -26,21 +26,8 @@ const AttorneySignup = () => {
   const [formError, setFormError] = useState("")
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
-  const [redirectMessage, setRedirectMessage] = useState(location.state?.message || "")
 
-  useEffect(() => {
-    if (location.state?.message) {
-      setRedirectMessage(location.state.message)
 
-      window.history.replaceState({}, document.title)
-
-      const timer = setTimeout(() => {
-        setRedirectMessage("")
-      }, 10000)
-
-      return () => clearTimeout(timer)
-    }
-  }, [location.state])
   const validate = () => {
     if (
       !first_name ||
@@ -83,9 +70,9 @@ const AttorneySignup = () => {
       })
 
       toast.success("Account created! Please check your email to verify.")
-      navigate("/attorney/signup", {
+      navigate("/attorney/SignupSuccess", {
         replace: true,
-        state: { message: "Please check your email and verify your account." },
+        state: { message: "Signup successful! Please check your email and verify your account." },
       })
     } catch (err) {
       console.error("Signup failed:", err)
@@ -117,14 +104,7 @@ const AttorneySignup = () => {
           <ThemeToggle />
         </div>
       </header>
-      {redirectMessage && (
-        <div className="fixed top-5 right-5 animate-slide-in animate-pulse">
-          <div className="bg-yellow-100 border border-yellow-400 text-yellow-800 px-4 py-3 rounded-lg shadow-lg w-80 relative overflow-hidden">
-            <p className="font-semibold">{redirectMessage || "Please Check your mail and verify."}</p>
-            <div className="absolute bottom-0 left-0 h-1 bg-yellow-400 animate-timeline"></div>
-          </div>
-        </div>
-      )}
+
 
       {/* Main */}
       <main className="container mx-auto px-4 py-16 md:py-24">
@@ -146,7 +126,7 @@ const AttorneySignup = () => {
               {/* First Name & Last Name */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="first_name">First name</Label>
+                  <Label htmlFor="first_name" className="text-xs font-medium">First name <span className="text-sm text-destructive">*</span></Label>
                   <Input
                     id="first_name"
                     value={first_name}
@@ -158,7 +138,7 @@ const AttorneySignup = () => {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="last_name">Last name</Label>
+                  <Label htmlFor="last_name" className="text-xs font-medium">Last name <span className="text-sm text-destructive">*</span></Label>
                   <Input
                     id="last_name"
                     value={last_name}
@@ -173,7 +153,7 @@ const AttorneySignup = () => {
 
               {/* Username */}
               <div className="space-y-2">
-                <Label htmlFor="username">Username</Label>
+                <Label htmlFor="username" className="text-xs font-medium">Username <span className="text-sm text-destructive">*</span></Label>
                 <Input
                   id="username"
                   value={username}
@@ -187,7 +167,7 @@ const AttorneySignup = () => {
 
               {/* Email */}
               <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="email" className="text-xs font-medium">Email <span className="text-sm text-destructive">*</span></Label>
                 <div className="relative">
                   <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                   <Input
@@ -205,7 +185,7 @@ const AttorneySignup = () => {
 
               {/* Password */}
               <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
+                <Label htmlFor="password" className="text-xs font-medium">Password <span className="text-sm text-destructive">*</span></Label>
                 <div className="relative">
                   <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                   <Input
@@ -234,7 +214,7 @@ const AttorneySignup = () => {
 
               {/* Confirm Password */}
               <div className="space-y-2">
-                <Label htmlFor="password_confirm">Confirm password</Label>
+                <Label htmlFor="password_confirm" className="text-xs font-medium">Confirm password <span className="text-sm text-destructive">*</span></Label>
                 <div className="relative">
                   <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                   <Input

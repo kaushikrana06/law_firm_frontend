@@ -15,6 +15,7 @@ import useBootstrapAuth from "./hooks/useBootstrapAuth";
 import { Toaster } from "./components/ui/sonner";
 import AttorneySuccessVerify from "./pages/AttorneySuccessVerify";
 import AttorneyInvalidVerify from "./pages/AttorneyInvalidVerify";
+import SignupSuccess from "./pages/SignupSuccess";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -40,7 +41,7 @@ const App = () => {
             <Route path="/attorney/login" element={<AttorneyLogin />} />
             <Route path="/success" element={<AttorneySuccessVerify />} />
             <Route path="/invalid" element={<AttorneyInvalidVerify />} />
-
+            <Route path="/signup-success" element={<SignupSuccess />} />
             <Route path="/attorney/signup" element={<AttorneySignup />} />
             <Route element={<RequireAuth />}>
               <Route path="/attorney/dashboard" element={<AttorneyDashboard />} />
