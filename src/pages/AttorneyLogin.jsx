@@ -102,7 +102,7 @@ const AttorneyLogin = () => {
               <div className="w-16 h-16 gradient-primary rounded-xl flex items-center justify-center mx-auto mb-4">
                 <Scale className="w-8 h-8 text-primary-foreground" />
               </div>
-              <h2 className="text-3xl font-serif font-bold mb-2">Attorney Login</h2>
+              <h2 className="text-3xl font-bold mb-2">Attorney Login</h2>
               <p className="text-muted-foreground">Access your dashboard to manage cases</p>
             </div>
 

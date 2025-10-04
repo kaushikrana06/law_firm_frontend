@@ -114,7 +114,7 @@ const AttorneySignup = () => {
               <div className="w-16 h-16 gradient-primary rounded-xl flex items-center justify-center mx-auto mb-4">
                 <User className="w-8 h-8 text-primary-foreground" />
               </div>
-              <h2 className="text-3xl font-serif font-bold mb-2">
+              <h2 className="text-3xl font-bold mb-2">
                 Create Attorney Account
               </h2>
               <p className="text-muted-foreground">

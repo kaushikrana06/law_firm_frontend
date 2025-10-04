@@ -107,14 +107,21 @@ All colors MUST be HSL.
   }
 
   body {
-    @apply bg-background text-foreground font-sans antialiased;
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  }
+  @apply bg-background text-foreground font-sans antialiased;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
 
-  h1, h2, h3, h4, h5, h6 {
-    font-family: 'Playfair Display', serif;
-    font-weight: 700;
-  }
+/* Headings use Inconsolata */
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Inconsolata';
+  font-weight: 700;
+}
+
+/* Paragraphs use Quicksand */
+p {
+  font-family: 'Quicksand';
+}
+
 }
 
 @layer utilities {
