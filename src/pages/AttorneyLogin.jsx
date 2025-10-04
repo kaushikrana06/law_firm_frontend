@@ -109,8 +109,8 @@ const AttorneyLogin = () => {
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Email */}
               <div className="space-y-2">
-                <Label htmlFor="email" className="text-base font-medium">
-                  Email
+                <Label htmlFor="email" className="text-xs font-medium">
+                  Email <span className="text-sm text-destructive">*</span>
                 </Label>
                 <div className="relative">
                   <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
@@ -129,8 +129,8 @@ const AttorneyLogin = () => {
 
               {/* Password */}
               <div className="space-y-2">
-                <Label htmlFor="password" className="text-base font-medium">
-                  Password
+                <Label htmlFor="password" className="text-xs font-medium">
+                  Password <span className="text-sm text-destructive">*</span>
                 </Label>
                 <div className="relative">
                   <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
