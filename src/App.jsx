@@ -41,7 +41,7 @@ const App = () => {
             <Route path="/attorney/login" element={<AttorneyLogin />} />
             <Route path="/success" element={<AttorneySuccessVerify />} />
             <Route path="/invalid" element={<AttorneyInvalidVerify />} />
-            <Route path="/signup-success" element={<SignupSuccess />} />
+            <Route path="/attorney/signup-success" element={<SignupSuccess />} />
             <Route path="/attorney/signup" element={<AttorneySignup />} />
             <Route element={<RequireAuth />}>
               <Route path="/attorney/dashboard" element={<AttorneyDashboard />} />

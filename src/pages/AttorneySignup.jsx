@@ -70,9 +70,9 @@ const AttorneySignup = () => {
       })
 
       toast.success("Account created! Please check your email to verify.")
-      navigate("/attorney/SignupSuccess", {
+      navigate("/attorney/signup-success", {
         replace: true,
-        state: { message: "Signup successful! Please check your email and verify your account." },
+        state: { message: `Signup successful! Please check your email (${email}) and verify your account.` },
       })
     } catch (err) {
       console.error("Signup failed:", err)
