@@ -3,8 +3,8 @@ import { store } from "../../store/store";
 import { setCredentials, clearAuth } from "../../features/auth/authSlice";
 import { refreshAccess } from "./authApi";
 
-const baseURL = `${import.meta.env.VITE_API_URL}/api/`;
-
+const RAW = (import.meta.env.VITE_API_URL || "").trim().replace(/\/+$/, "");
+const baseURL = RAW ? `${RAW}/api` : "/api";
 export const axiosPublic = axios.create({
   baseURL,
   withCredentials: true,
