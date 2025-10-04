@@ -74,9 +74,9 @@ const ClientStatusView = () => {
           </Card>
 
           {/* Case Details Grid */}
-          <div className="grid md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-2 gap-6">
             <Card className="p-6 shadow-elegant">
-              <div className="flex items-start gap-3">
+              <div className="flex md:flex-row flex-col items-start gap-3">
                 <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
                   <User className="w-5 h-5 text-primary" />
                 </div>
@@ -88,7 +88,7 @@ const ClientStatusView = () => {
             </Card>
 
             <Card className="p-6 shadow-elegant">
-              <div className="flex items-start gap-3">
+              <div className="flex md:flex-row flex-col items-start gap-3">
                 <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
                   <FileText className="w-5 h-5 text-primary" />
                 </div>
@@ -100,7 +100,7 @@ const ClientStatusView = () => {
             </Card>
 
             <Card className="p-6 shadow-elegant">
-              <div className="flex items-start gap-3">
+              <div className="flex md:flex-row flex-col items-start gap-3">
                 <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
                   <Calendar className="w-5 h-5 text-primary" />
                 </div>
@@ -112,7 +112,7 @@ const ClientStatusView = () => {
             </Card>
 
             <Card className="p-6 shadow-elegant">
-              <div className="flex items-start gap-3">
+              <div className="flex md:flex-row flex-col items-start gap-3">
                 <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
                   <Scale className="w-5 h-5 text-primary" />
                 </div>
