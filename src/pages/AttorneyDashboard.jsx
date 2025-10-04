@@ -1,7 +1,6 @@
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import {
-  Scale,
   LogOut,
   Plus,
   Search,
@@ -10,6 +9,7 @@ import {
   Clock,
   CheckCircle2
 } from "lucide-react"
+import { ImSpinner2 } from "react-icons/im"
 import { Button } from "../components/ui/button"
 import { Card } from "../components/ui/card"
 import { Input } from "../components/ui/input"
@@ -28,7 +28,8 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger
+  DialogTrigger,
+  DialogFooter
 } from "../components/ui/dialog"
 import { Label } from "../components/ui/label"
 import { toast } from "sonner"
@@ -41,9 +42,12 @@ import { logoutApi } from "@/auth/api/authApi"
 const AttorneyDashboard = () => {
   const navigate = useNavigate()
   const dispatch = useDispatch()
+
   const [searchTerm, setSearchTerm] = useState("")
   const [statusFilter, setStatusFilter] = useState("all")
-  const [loggingOut, setLoggingOut] = useState(false)
+  const [open, setOpen] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+
   // Mock cases data
   const [cases] = useState([
     {
@@ -79,31 +83,30 @@ const AttorneyDashboard = () => {
       nextAction: "File submission"
     }
   ])
-  const accessToken = useSelector((state) => state.auth.accessToken);
-  const refresh = useSelector((state) => state.auth.refreshToken);
-  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+
+  const refresh = useSelector((state) => state.auth.refreshToken)
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated)
   console.log("isAuthenticated", isAuthenticated)
+
   const handleLogout = async () => {
-    if (loggingOut) return;
-    setLoggingOut(true);
-
+    if (isLoading) return
+    setIsLoading(true)
     try {
-      const res = await logoutApi(refresh)
-      dispatch(clearAuth());
-      toast.success("Logged out successfully");
-      navigate("/attorney/login", { replace: true });
+      await logoutApi(refresh)
+      dispatch(clearAuth())
+      toast.success("Logged out successfully")
+      navigate("/attorney/login", { replace: true })
     } catch {
-      toast.error("Couldn't reach server. Your local session was cleared.");
-      dispatch(clearAuth());
-      navigate("/attorney/login", { replace: true });
+      toast.error("Couldn't reach server. Your local session was cleared.")
+      dispatch(clearAuth())
+      navigate("/attorney/login", { replace: true })
     } finally {
-      setLoggingOut(false);
+      setIsLoading(false)
+      setOpen(false)
     }
-  };
+  }
 
-
-
-  const getStatusColor = status => {
+  const getStatusColor = (status) => {
     const colors = {
       "Discovery Phase": "secondary",
       Mediation: "default",
@@ -113,7 +116,7 @@ const AttorneyDashboard = () => {
     return colors[status] || "outline"
   }
 
-  const filteredCases = cases.filter(case_ => {
+  const filteredCases = cases.filter((case_) => {
     const matchesSearch =
       case_.clientName.toLowerCase().includes(searchTerm.toLowerCase()) ||
       case_.id.toLowerCase().includes(searchTerm.toLowerCase())
@@ -131,10 +134,36 @@ const AttorneyDashboard = () => {
             <Logo />
             <div className="flex items-center gap-2">
               <ThemeToggle />
-              <Button variant="ghost" onClick={handleLogout} className="gap-2">
-                <LogOut className="w-4 h-4" />
-                <span className="hidden sm:inline">Logout</span>
-              </Button>
+
+              <Dialog open={open} onOpenChange={setOpen}>
+                <DialogTrigger asChild>
+                  <Button variant="ghost" className="gap-2">
+                    <LogOut className="w-4 h-4" />
+                    <span className="hidden sm:inline">Logout</span>
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="bg-background sm:max-w-[425px]">
+                  <DialogHeader>
+                    <DialogTitle>Are you absolutely sure?</DialogTitle>
+                    <DialogDescription>
+                      You will be logged out
+                    </DialogDescription>
+                  </DialogHeader>
+                  <DialogFooter>
+                    <Button
+                      variant="action"
+                      onClick={handleLogout}
+                      disabled={isLoading}
+                    >
+                      {isLoading ? (
+                        <ImSpinner2 className="h-5 w-5 animate-spin" />
+                      ) : (
+                        "Log out"
+                      )}
+                    </Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
             </div>
           </div>
         </div>
@@ -213,7 +242,7 @@ const AttorneyDashboard = () => {
               <Input
                 placeholder="Search by case number or client name..."
                 value={searchTerm}
-                onChange={e => setSearchTerm(e.target.value)}
+                onChange={(e) => setSearchTerm(e.target.value)}
                 className="pl-11"
               />
             </div>
@@ -271,7 +300,7 @@ const AttorneyDashboard = () => {
 
         {/* Cases List */}
         <div className="space-y-4">
-          {filteredCases.map(case_ => (
+          {filteredCases.map((case_) => (
             <Card
               key={case_.id}
               className="p-6 shadow-elegant hover:shadow-lg transition-smooth cursor-pointer"
