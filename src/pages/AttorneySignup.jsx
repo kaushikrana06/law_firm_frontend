@@ -1,5 +1,5 @@
-import { useState } from "react"
-import { useNavigate } from "react-router-dom"
+import { useEffect, useState } from "react"
+import { useLocation, useNavigate } from "react-router-dom"
 import { Scale, ArrowLeft, Mail, Lock, User, Eye, EyeOff } from "lucide-react"
 import { Button } from "../components/ui/button"
 import { Card } from "../components/ui/card"
@@ -14,6 +14,7 @@ const MIN_PASSWORD = 8
 
 const AttorneySignup = () => {
   const navigate = useNavigate()
+  const location = useLocation()
 
   const [first_name, setFirstName] = useState("")
   const [last_name, setLastName] = useState("")
@@ -25,7 +26,21 @@ const AttorneySignup = () => {
   const [formError, setFormError] = useState("")
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+  const [redirectMessage, setRedirectMessage] = useState(location.state?.message || "")
 
+  useEffect(() => {
+    if (location.state?.message) {
+      setRedirectMessage(location.state.message)
+
+      window.history.replaceState({}, document.title)
+
+      const timer = setTimeout(() => {
+        setRedirectMessage("")
+      }, 10000)
+
+      return () => clearTimeout(timer)
+    }
+  }, [location.state])
   const validate = () => {
     if (
       !first_name ||
@@ -102,6 +117,14 @@ const AttorneySignup = () => {
           <ThemeToggle />
         </div>
       </header>
+      {redirectMessage && (
+        <div className="fixed top-5 right-5 animate-slide-in animate-pulse">
+          <div className="bg-yellow-100 border border-yellow-400 text-yellow-800 px-4 py-3 rounded-lg shadow-lg w-80 relative overflow-hidden">
+            <p className="font-semibold">{redirectMessage || "Please Check your mail and verify."}</p>
+            <div className="absolute bottom-0 left-0 h-1 bg-yellow-400 animate-timeline"></div>
+          </div>
+        </div>
+      )}
 
       {/* Main */}
       <main className="container mx-auto px-4 py-16 md:py-24">
