@@ -179,7 +179,7 @@ const AttorneyDashboard = () => {
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
           <Card className="p-6 shadow-elegant">
             <div className="flex items-center justify-between">
               <div>
@@ -234,7 +234,7 @@ const AttorneyDashboard = () => {
         </div>
 
         {/* Filters and Search */}
-        <Card className="p-6 mb-6 shadow-elegant">
+        {/* <Card className="p-6 mb-6 shadow-elegant">
           <div className="flex flex-col md:flex-row gap-4">
             <div className="flex-1 relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
@@ -295,7 +295,7 @@ const AttorneyDashboard = () => {
               </DialogContent>
             </Dialog>
           </div>
-        </Card>
+        </Card> */}
 
         {/* Cases List */}
         <div className="space-y-4">
