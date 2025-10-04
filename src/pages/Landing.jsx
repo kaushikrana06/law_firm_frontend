@@ -23,7 +23,7 @@ const Landing = () => {
       <main className="container mx-auto px-4 py-16 md:py-24">
         <div className="max-w-4xl mx-auto text-center space-y-8">
           <div className="space-y-4">
-            <h2 className="text-5xl md:text-6xl font-serif font-bold tracking-tight">
+            <h2 className="text-5xl md:text-6xl font-bold tracking-tight">
               Case Status Tracking
               <span className="block text-primary mt-2">Made Simple</span>
             </h2>
@@ -62,7 +62,7 @@ const Landing = () => {
               <div className="w-12 h-12 gradient-primary rounded-lg flex items-center justify-center mx-auto mb-4">
                 <Shield className="w-6 h-6 text-primary-foreground" />
               </div>
-              <h3 className="font-serif font-semibold text-lg mb-2">
+              <h3 className=" font-semibold text-lg mb-2">
                 Secure Access
               </h3>
               <p className="text-muted-foreground text-sm">
@@ -75,7 +75,7 @@ const Landing = () => {
               <div className="w-12 h-12 gradient-secondary rounded-lg flex items-center justify-center mx-auto mb-4">
                 <Clock className="w-6 h-6 text-secondary-foreground" />
               </div>
-              <h3 className="font-serif font-semibold text-lg mb-2">
+              <h3 className=" font-semibold text-lg mb-2">
                 Real-Time Updates
               </h3>
               <p className="text-muted-foreground text-sm">
@@ -88,7 +88,7 @@ const Landing = () => {
               <div className="w-12 h-12 gradient-primary rounded-lg flex items-center justify-center mx-auto mb-4">
                 <Scale className="w-6 h-6 text-primary-foreground" />
               </div>
-              <h3 className="font-serif font-semibold text-lg mb-2">
+              <h3 className=" font-semibold text-lg mb-2">
                 Case Tracking
               </h3>
               <p className="text-muted-foreground text-sm">

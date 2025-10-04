@@ -172,14 +172,14 @@ const AttorneyDashboard = () => {
       <main className="container mx-auto px-4 py-8">
         {/* Dashboard Header */}
         <div className="mb-8">
-          <h2 className="text-4xl font-serif font-bold mb-2">Case Dashboard</h2>
+          <h2 className="text-4xl font-bold mb-2">Case Dashboard</h2>
           <p className="text-muted-foreground">
             Manage and track all your active cases
           </p>
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
           <Card className="p-6 shadow-elegant">
             <div className="flex items-center justify-between">
               <div>
@@ -234,7 +234,7 @@ const AttorneyDashboard = () => {
         </div>
 
         {/* Filters and Search */}
-        <Card className="p-6 mb-6 shadow-elegant">
+        {/* <Card className="p-6 mb-6 shadow-elegant">
           <div className="flex flex-col md:flex-row gap-4">
             <div className="flex-1 relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
@@ -295,7 +295,7 @@ const AttorneyDashboard = () => {
               </DialogContent>
             </Dialog>
           </div>
-        </Card>
+        </Card> */}
 
         {/* Cases List */}
         <div className="space-y-4">
@@ -308,7 +308,7 @@ const AttorneyDashboard = () => {
                 <div className="flex-1">
                   <div className="flex items-start justify-between mb-2">
                     <div>
-                      <h3 className="text-xl font-serif font-bold mb-1">
+                      <h3 className="text-xl font-bold mb-1">
                         {case_.clientName}
                       </h3>
                       <p className="text-sm text-muted-foreground">
@@ -361,7 +361,7 @@ const AttorneyDashboard = () => {
             <div className="w-16 h-16 rounded-full bg-muted mx-auto mb-4 flex items-center justify-center">
               <Search className="w-8 h-8 text-muted-foreground" />
             </div>
-            <h3 className="text-xl font-serif font-bold mb-2">
+            <h3 className="text-xl font-bold mb-2">
               No cases found
             </h3>
             <p className="text-muted-foreground">

@@ -62,7 +62,7 @@ const ClientCodeEntry = () => {
               <div className="w-16 h-16 gradient-secondary rounded-xl flex items-center justify-center mx-auto mb-4">
                 <Search className="w-8 h-8 text-secondary-foreground" />
               </div>
-              <h2 className="text-3xl font-serif font-bold mb-2">
+              <h2 className="text-3xl font-bold mb-2">
                 Enter Your Case Code
               </h2>
               <p className="text-muted-foreground">

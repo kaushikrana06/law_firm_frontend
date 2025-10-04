@@ -60,7 +60,7 @@ const ClientStatusView = () => {
           <Card className="p-6 shadow-elegant">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div>
-                <h2 className="text-3xl font-serif font-bold mb-2">
+                <h2 className="text-3xl  font-bold mb-2">
                   Case Status
                 </h2>
                 <p className="text-muted-foreground">
@@ -126,7 +126,7 @@ const ClientStatusView = () => {
 
           {/* Case Timeline */}
           <Card className="p-6 shadow-elegant">
-            <h3 className="text-2xl font-serif font-bold mb-6">
+            <h3 className="text-2xl font-bold mb-6">
               Case Progress
             </h3>
             <div className="space-y-4">
