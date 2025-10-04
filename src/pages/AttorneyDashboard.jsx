@@ -97,7 +97,6 @@ const AttorneyDashboard = () => {
       toast.success("Logged out successfully")
       navigate("/attorney/login", { replace: true })
     } catch {
-      toast.error("Couldn't reach server. Your local session was cleared.")
       dispatch(clearAuth())
       navigate("/attorney/login", { replace: true })
     } finally {
