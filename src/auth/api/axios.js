@@ -61,7 +61,7 @@ axiosProtected.interceptors.response.use(
 
       isRefreshing = true;
       try {
-        const data = await refreshAccess(); 
+        const data = await refreshAccess();
         const { access, refresh } = data;
 
         store.dispatch(setCredentials({ access, refresh, user: data.user || null }));
@@ -69,6 +69,12 @@ axiosProtected.interceptors.response.use(
         notify(access);
 
         original.headers.Authorization = `Bearer ${access}`;
+
+        if (original.url.includes("/auth/logout/")) {
+          const state = store.getState();
+          original.data = JSON.stringify({ refresh: state.auth.refreshToken });
+        }
+
         return axiosProtected(original);
       } catch (refreshErr) {
         notify(null);
