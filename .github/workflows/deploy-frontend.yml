@@ -1,0 +1,63 @@
+name: Deploy Frontend to EC2
+
+on:
+  push:
+    branches: [ main ]   # change if you deploy from another branch
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Use Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install deps
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Archive build output
+        run: |
+          if [ -d "dist" ]; then OUTDIR=dist; elif [ -d "build" ]; then OUTDIR=build; else echo "No dist/build folder"; exit 1; fi
+          tar -czf build.tgz "$OUTDIR"
+
+      - name: Upload artifact to EC2
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          source: "build.tgz"
+          target: "/tmp/"
+
+      - name: Release on EC2
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          script: |
+            set -e
+            WEB_DIR="/var/www/law_firm_frontend"
+            REL_DIR="$WEB_DIR/releases/${GITHUB_SHA}"
+            mkdir -p "$REL_DIR"
+            tar -xzf /tmp/build.tgz -C "$REL_DIR"
+            # detect dist/ vs build/
+            if [ -d "$REL_DIR/dist" ]; then SRC="$REL_DIR/dist"; else SRC="$REL_DIR/build"; fi
+            # atomic symlink swap
+            ln -sfn "$SRC" "$WEB_DIR/current.new"
+            mv -Tf "$WEB_DIR/current.new" "$WEB_DIR/current"
+            # keep last 5 releases
+            (ls -dt $WEB_DIR/releases/* | tail -n +6 | xargs -r rm -rf)
+            # reload nginx (no downtime)
+            sudo systemctl reload nginx || true
