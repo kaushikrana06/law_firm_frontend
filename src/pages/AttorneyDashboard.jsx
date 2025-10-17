@@ -5,6 +5,7 @@ import {
   FileText,
   Clock,
   Search,
+  XCircle,
 } from "lucide-react"
 import { ImSpinner2 } from "react-icons/im"
 import { Button } from "../components/ui/button"
@@ -18,9 +19,10 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-  DialogFooter
+  DialogFooter,
 } from "../components/ui/dialog"
 import { Skeleton } from "../components/ui/skeleton"
+import { Input } from "../components/ui/input"
 import { toast } from "sonner"
 import { useDispatch, useSelector } from "react-redux"
 import { clearAuth } from "@/features/auth/authSlice"
@@ -28,6 +30,13 @@ import Logo from "@/components/Logo"
 import Footer from "@/components/Footer"
 import { logoutApi } from "@/auth/api/authApi"
 import { axiosProtected } from "@/auth/api/axios"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../components/ui/select"
 
 const AttorneyDashboard = () => {
   const navigate = useNavigate()
@@ -35,18 +44,28 @@ const AttorneyDashboard = () => {
 
   const [cases, setCases] = useState([])
   const [searchTerm, setSearchTerm] = useState("")
+  const [filteredCases, setFilteredCases] = useState([])
   const [isLoading, setIsLoading] = useState(true)
   const [logoutOpen, setLogoutOpen] = useState(false)
   const [logoutLoading, setLogoutLoading] = useState(false)
 
+  // For viewing case details
+  const [selectedCase, setSelectedCase] = useState(null)
+  const [isDialogOpen, setIsDialogOpen] = useState(false)
+  const [updating, setUpdating] = useState(false)
+  const [editStatus, setEditStatus] = useState("")
+  const [editNotes, setEditNotes] = useState("")
+
   const refresh = useSelector((state) => state.auth.refreshToken)
 
+  // Fetch cases
   useEffect(() => {
     const fetchCases = async () => {
       setIsLoading(true)
       try {
         const response = await axiosProtected.get("/attorney/bootstrap")
         setCases(response.data)
+        setFilteredCases(response.data)
       } catch (error) {
         console.error(error)
         toast.error("Failed to load cases")
@@ -54,7 +73,6 @@ const AttorneyDashboard = () => {
         setIsLoading(false)
       }
     }
-
     fetchCases()
   }, [])
 
@@ -75,19 +93,56 @@ const AttorneyDashboard = () => {
     }
   }
 
-  const filteredCases = cases.filter(
-    (c) =>
-      c.client_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      c.case_id?.toLowerCase().includes(searchTerm.toLowerCase())
-  )
+  // Search handler
+  const handleSearch = () => {
+    const filtered = cases.filter(
+      (c) =>
+        c.client_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        c.client_code?.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+    setFilteredCases(filtered)
+  }
 
-  const getStatusColor = (status) => {
-    const map = {
-      "Court Date Scheduled": "default",
-      "Under Review": "secondary",
-      "Discovery Phase": "outline",
+  // Open details popup
+  const handleViewDetails = (case_) => {
+    setSelectedCase(case_)
+    setEditStatus(case_.case_status || "")
+    setEditNotes(case_.notes || "")
+    setIsDialogOpen(true)
+  }
+
+  // Update case
+  const handleUpdateCase = async () => {
+    if (!selectedCase) return
+    setUpdating(true)
+    try {
+      const response = await axiosProtected.post(
+        `/attorney/cases/${selectedCase.case_id}`,
+        { case_status: editStatus, notes: editNotes }
+      )
+      toast.success("Case updated successfully")
+
+      setCases((prev) =>
+        prev.map((c) =>
+          c.case_id === selectedCase.case_id
+            ? { ...c, case_status: editStatus, notes: editNotes }
+            : c
+        )
+      )
+      setFilteredCases((prev) =>
+        prev.map((c) =>
+          c.case_id === selectedCase.case_id
+            ? { ...c, case_status: editStatus, notes: editNotes }
+            : c
+        )
+      )
+      setIsDialogOpen(false)
+    } catch (err) {
+      console.error(err)
+      toast.error("Failed to update case")
+    } finally {
+      setUpdating(false)
     }
-    return map[status] || "secondary"
   }
 
   return (
@@ -143,15 +198,20 @@ const AttorneyDashboard = () => {
         </div>
 
         {/* Search Bar */}
-        <div className="relative max-w-md mx-auto mb-10">
-          <Search className="absolute left-3 top-3 h-5 w-5 text-muted-foreground" />
-          <input
-            type="text"
-            placeholder="Search by client name or case ID..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 border border-input rounded-lg bg-background focus:ring-2 focus:ring-primary transition-all"
-          />
+        <div className="flex justify-center gap-2 mb-10 max-w-lg mx-auto">
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-3 h-5 w-5 text-muted-foreground" />
+            <Input
+              type="text"
+              placeholder="Search by client name or case ID..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-10"
+            />
+          </div>
+          <Button onClick={handleSearch} variant="default" className="gap-2">
+            <Search className="w-4 h-4" /> Search
+          </Button>
         </div>
 
         {/* Loading Skeleton */}
@@ -171,7 +231,7 @@ const AttorneyDashboard = () => {
             {filteredCases.map((case_) => (
               <Card
                 key={case_.case_id}
-                className="p-6 shadow-elegant hover:shadow-lg transition-all hover:scale-[1.01] group"
+                className="p-6 shadow-elegant hover:shadow-lg transition-all"
               >
                 <div className="flex items-start justify-between mb-3">
                   <div>
@@ -182,9 +242,7 @@ const AttorneyDashboard = () => {
                       Case #{case_.client_code}
                     </p>
                   </div>
-                  <Badge variant={getStatusColor(case_.case_status)}>
-                    {case_.case_status}
-                  </Badge>
+                  <Badge variant="secondary">{case_.case_status}</Badge>
                 </div>
                 <div className="mt-4 space-y-2 text-sm">
                   <p>
@@ -198,14 +256,12 @@ const AttorneyDashboard = () => {
                       {new Date(case_.last_update).toLocaleDateString()}
                     </span>
                   </p>
-                  <p className="text-muted-foreground mt-1 line-clamp-2">
-                    Notes: {case_.notes || "No notes added."}
-                  </p>
+                  <p className="text-muted-foreground mt-1 line-clamp-2"> Notes: {case_.notes || "No notes added."} </p>
                 </div>
                 <Button
                   variant="default"
                   className="mt-5 w-full"
-                  onClick={() => navigate(`/attorney/case/${case_.case_id}`)}
+                  onClick={() => handleViewDetails(case_)}
                 >
                   View Details
                 </Button>
@@ -226,6 +282,85 @@ const AttorneyDashboard = () => {
       </main>
 
       <Footer />
+
+      {/* Case Details Dialog */}
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent className="sm:max-w-[600px] bg-background">
+          <DialogHeader>
+            <DialogTitle>Case Details</DialogTitle>
+            <DialogDescription>
+              View and update case information.
+            </DialogDescription>
+          </DialogHeader>
+
+          {selectedCase && (
+            <div className="space-y-4 mt-4">
+              <p>
+                <strong>Client Name:</strong> {selectedCase.client_name}
+              </p>
+              <p>
+                <strong>Client Code:</strong> {selectedCase.client_code}
+              </p>
+              <p>
+                <strong>Case Type:</strong> {selectedCase.case_type}
+              </p>
+
+              {/* ✅ Case Status Select Box */}
+              <div>
+                <label className="text-sm text-muted-foreground mb-1 block">
+                  Case Status
+                </label>
+                <Select
+                  value={editStatus}
+                  onValueChange={(value) => setEditStatus(value)}
+                >
+                  <SelectTrigger className="w-full my-2">
+                    <SelectValue placeholder="Select case status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Case Approved">Case Approved</SelectItem>
+                    <SelectItem value="Case Signed">Case Signed</SelectItem>
+                    <SelectItem value="Court Date Scheduled">Court Date Scheduled</SelectItem>
+                    <SelectItem value="Documents Received">Documents Received</SelectItem>
+                    <SelectItem value="Hearing Scheduled">Hearing Scheduled</SelectItem>
+                    <SelectItem value="Insurance Contacted">Insurance Contacted</SelectItem>
+                    <SelectItem value="Mediation Scheduled">Mediation Scheduled</SelectItem>
+                    <SelectItem value="Pending Insurance Response">Pending Insurance Response</SelectItem>
+                    <SelectItem value="Settlement Approved">Settlement Approved</SelectItem>
+                    <SelectItem value="Treatment Scheduled">Treatment Scheduled</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Notes Field */}
+              <div>
+                <label className="text-sm text-muted-foreground mb-1 block">Notes</label>
+                <textarea
+                  value={editNotes}
+                  onChange={(e) => setEditNotes(e.target.value)}
+                  className="w-full border rounded-md p-2 bg-background my-2"
+                  rows="4"
+                />
+              </div>
+            </div>
+          )}
+
+          <DialogFooter>
+            <Button
+              onClick={handleUpdateCase}
+              disabled={updating}
+              variant="default"
+            >
+              {updating ? (
+                <ImSpinner2 className="animate-spin h-5 w-5" />
+              ) : (
+                "Update Case"
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
     </div>
   )
 }
