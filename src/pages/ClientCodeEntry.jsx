@@ -24,10 +24,8 @@ const ClientCodeEntry = () => {
 
     setIsLoading(true)
 
-    // Simulate API call
     setTimeout(() => {
       setIsLoading(false)
-      // For demo, accept any code that's at least 6 characters
       if (caseCode.length >= 6) {
         navigate(`/client/status/${caseCode}`)
       } else {

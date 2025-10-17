@@ -1,11 +1,14 @@
+import { useEffect, useState } from "react"
 import { useParams, useNavigate } from "react-router-dom"
 import {
   Scale,
   ArrowLeft,
   Calendar,
   FileText,
-  User,
-  CheckCircle2
+  Phone,
+  Mail,
+  Building2,
+  ClipboardList
 } from "lucide-react"
 import { Button } from "../components/ui/button"
 import { Card } from "../components/ui/card"
@@ -13,27 +16,29 @@ import { ThemeToggle } from "../components/ThemeToggle"
 import { Badge } from "../components/ui/badge"
 import Logo from "@/components/Logo"
 import Footer from "@/components/Footer"
+import { Skeleton } from "@/components/ui/skeleton"
+import { axiosPublic } from "@/auth/api/axios"
+import { toast } from "sonner"
 
 const ClientStatusView = () => {
   const { code } = useParams()
   const navigate = useNavigate()
+  const [clientData, setClientData] = useState(null)
+  const [loading, setLoading] = useState(true)
 
-  const caseData = {
-    caseNumber: code,
-    clientName: "John Doe",
-    caseType: "Civil Litigation",
-    filingDate: "January 15, 2025",
-    currentStatus: "Discovery Phase",
-    lastUpdated: "March 15, 2025",
-    attorney: "Sarah Johnson, Esq.",
-    phases: [
-      { name: "Case Filed", status: "completed", date: "Jan 15, 2025" },
-      { name: "Initial Review", status: "completed", date: "Jan 22, 2025" },
-      { name: "Discovery Phase", status: "active", date: "Feb 1, 2025" },
-      { name: "Mediation", status: "pending", date: "TBD" },
-      { name: "Trial", status: "pending", date: "TBD" }
-    ]
-  }
+  useEffect(() => {
+    const fetchClientData = async () => {
+      try {
+        const res = await axiosPublic.post(`/client/lookup`, { code })
+        setClientData(res.data)
+      } catch (err) {
+        toast.error(err.response.data.detail)
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchClientData()
+  }, [code])
 
   return (
     <div className="min-h-screen gradient-hero">
@@ -53,131 +58,133 @@ const ClientStatusView = () => {
         </div>
       </header>
 
-      {/* Main Content */}
-      <main className="container mx-auto px-4 py-8 md:py-12">
-        <div className="max-w-4xl mx-auto space-y-6">
-          {/* Case Header */}
-          <Card className="p-6 shadow-elegant">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-              <div>
-                <h2 className="text-3xl  font-bold mb-2">
-                  Case Status
+      {/* Main */}
+      <main className="container mx-auto px-4 py-10 md:py-14">
+        <div className="max-w-5xl mx-auto space-y-8">
+          {/* Client Overview */}
+          <Card className="p-8 shadow-elegant relative overflow-hidden">
+            <div className="absolute inset-0 opacity-[0.03] bg-gradient-to-r from-primary to-secondary" />
+
+            {loading ? (
+              <div className="space-y-4">
+                <Skeleton className="h-8 w-1/3" />
+                <Skeleton className="h-5 w-1/4" />
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-6">
+                  <Skeleton className="h-16" />
+                  <Skeleton className="h-16" />
+                  <Skeleton className="h-16" />
+                </div>
+              </div>
+            ) : (
+              <>
+                <h2 className="text-3xl font-bold tracking-tight mb-2">
+                  {clientData?.name || "N/A"}
                 </h2>
-                <p className="text-muted-foreground">
-                  Case #{caseData.caseNumber}
+                <p className="text-muted-foreground mb-6">
+                  Client Code:{" "}
+                  <span className="font-semibold">{clientData?.code}</span>
                 </p>
-              </div>
-              <Badge className="w-fit gradient-secondary text-secondary-foreground font-semibold px-4 py-2 text-sm">
-                {caseData.currentStatus}
-              </Badge>
-            </div>
-          </Card>
 
-          {/* Case Details Grid */}
-          <div className="grid grid-cols-2 gap-6">
-            <Card className="p-6 shadow-elegant">
-              <div className="flex md:flex-row flex-col items-start gap-3">
-                <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
-                  <User className="w-5 h-5 text-primary" />
-                </div>
-                <div>
-                  <h3 className="font-semibold mb-1">Client Name</h3>
-                  <p className="text-muted-foreground">{caseData.clientName}</p>
-                </div>
-              </div>
-            </Card>
-
-            <Card className="p-6 shadow-elegant">
-              <div className="flex md:flex-row flex-col items-start gap-3">
-                <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
-                  <FileText className="w-5 h-5 text-primary" />
-                </div>
-                <div>
-                  <h3 className="font-semibold mb-1">Case Type</h3>
-                  <p className="text-muted-foreground">{caseData.caseType}</p>
-                </div>
-              </div>
-            </Card>
-
-            <Card className="p-6 shadow-elegant">
-              <div className="flex md:flex-row flex-col items-start gap-3">
-                <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
-                  <Calendar className="w-5 h-5 text-primary" />
-                </div>
-                <div>
-                  <h3 className="font-semibold mb-1">Filing Date</h3>
-                  <p className="text-muted-foreground">{caseData.filingDate}</p>
-                </div>
-              </div>
-            </Card>
-
-            <Card className="p-6 shadow-elegant">
-              <div className="flex md:flex-row flex-col items-start gap-3">
-                <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
-                  <Scale className="w-5 h-5 text-primary" />
-                </div>
-                <div>
-                  <h3 className="font-semibold mb-1">Attorney</h3>
-                  <p className="text-muted-foreground">{caseData.attorney}</p>
-                </div>
-              </div>
-            </Card>
-          </div>
-
-          {/* Case Timeline */}
-          <Card className="p-6 shadow-elegant">
-            <h3 className="text-2xl font-bold mb-6">
-              Case Progress
-            </h3>
-            <div className="space-y-4">
-              {caseData.phases.map((phase, index) => (
-                <div key={index} className="flex items-start gap-4">
-                  <div className="flex-shrink-0 mt-1">
-                    {phase.status === "completed" ? (
-                      <div className="w-8 h-8 rounded-full gradient-secondary flex items-center justify-center">
-                        <CheckCircle2 className="w-5 h-5 text-secondary-foreground" />
-                      </div>
-                    ) : phase.status === "active" ? (
-                      <div className="w-8 h-8 rounded-full border-2 border-primary bg-primary/20 flex items-center justify-center">
-                        <div className="w-3 h-3 rounded-full gradient-primary animate-pulse" />
-                      </div>
-                    ) : (
-                      <div className="w-8 h-8 rounded-full border-2 border-border bg-muted" />
-                    )}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                      <Mail className="w-5 h-5 text-primary" />
+                    </div>
+                    <div>
+                      <p className="text-sm text-muted-foreground">Email</p>
+                      <p className="font-medium">{clientData?.email || "—"}</p>
+                    </div>
                   </div>
-                  <div className="flex-1 pb-8 border-l-2 border-border ml-4 pl-6 -mt-1">
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                      <div>
-                        <h4 className="font-semibold text-lg">{phase.name}</h4>
-                        <p className="text-sm text-muted-foreground mt-1">
-                          {phase.date}
-                        </p>
-                      </div>
-                      <Badge
-                        variant={
-                          phase.status === "completed"
-                            ? "secondary"
-                            : phase.status === "active"
-                              ? "default"
-                              : "outline"
-                        }
-                        className="w-fit"
-                      >
-                        {phase.status}
-                      </Badge>
+
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                      <Phone className="w-5 h-5 text-primary" />
+                    </div>
+                    <div>
+                      <p className="text-sm text-muted-foreground">Phone</p>
+                      <p className="font-medium">{clientData?.phone || "—"}</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                      <ClipboardList className="w-5 h-5 text-primary" />
+                    </div>
+                    <div>
+                      <p className="text-sm text-muted-foreground">Notes</p>
+                      <p className="font-medium line-clamp-2">
+                        {clientData?.notes || "No notes available"}
+                      </p>
                     </div>
                   </div>
                 </div>
-              ))}
-            </div>
+              </>
+            )}
           </Card>
 
-          {/* Last Updated */}
-          <div className="text-center text-sm text-muted-foreground">
-            Last updated: {caseData.lastUpdated}
-          </div>
+          {/* Case Details */}
+          <Card className="p-8 shadow-elegant">
+            <h3 className="text-2xl font-bold mb-8 flex items-center gap-2">
+              <Scale className="w-6 h-6 text-primary" /> Case Details
+            </h3>
+
+            {loading ? (
+              <div className="space-y-4">
+                {[1, 2, 3].map((i) => (
+                  <Skeleton key={i} className="h-20 w-full" />
+                ))}
+              </div>
+            ) : clientData?.cases?.length > 0 ? (
+              <div className="grid gap-6">
+                {clientData.cases.map((c, i) => (
+                  <Card
+                    key={i}
+                    className="p-6 border-l-4 border-primary transition hover:shadow-lg bg-card/60 backdrop-blur"
+                  >
+                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                      <div>
+                        <h4 className="font-semibold text-xl mb-2">
+                          {c.case_type}
+                        </h4>
+                        <div className="flex flex-wrap gap-6 text-sm text-muted-foreground">
+                          <div className="flex items-center gap-2">
+                            <Building2 className="w-4 h-4" /> {c.firm_name}
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Calendar className="w-4 h-4" />{" "}
+                            Opened:{" "}
+                            {c.date_opened
+                              ? new Date(c.date_opened).toLocaleDateString()
+                              : "—"}
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <FileText className="w-4 h-4" />{" "}
+                            Last Update:{" "}
+                            {c.last_update
+                              ? new Date(c.last_update).toLocaleString()
+                              : "—"}
+                          </div>
+                        </div>
+                      </div>
+                      <Button
+                        variant="secondary"
+                        className="gradient-secondary text-secondary-foreground px-4 py-2 text-sm font-semibold flext items-center cursor-default"
+                      >
+                        {c.case_status}
+                      </Button>
+                    </div>
+                  </Card>
+                ))}
+              </div>
+            ) : (
+              <p className="text-center text-muted-foreground py-6">
+                No case records available.
+              </p>
+            )}
+          </Card>
         </div>
       </main>
+
       <Footer />
     </div>
   )
