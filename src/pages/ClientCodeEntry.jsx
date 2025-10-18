@@ -83,9 +83,7 @@ const ClientCodeEntry = () => {
                   className="h-12 text-center text-lg font-semibold tracking-widest"
                   disabled={isLoading}
                 />
-                <p className="text-xs text-muted-foreground">
-                  Example: ABC123 or CASE-2025-001
-                </p>
+               
               </div>
 
               <Button
