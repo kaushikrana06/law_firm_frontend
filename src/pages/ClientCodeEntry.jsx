@@ -64,7 +64,7 @@ const ClientCodeEntry = () => {
                 Enter Your Case Code
               </h2>
               <p className="text-muted-foreground">
-                Enter the unique code provided by your attorney to view your
+                Enter the unique code to view your
                 case status
               </p>
             </div>
